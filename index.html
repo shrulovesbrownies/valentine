@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Devansh, Be My Valentine?</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+
+<style>
+body {
+  margin: 0;
+  background: #ffcce6;
+  font-family: 'Press Start 2P', cursive;
+  text-align: center;
+  overflow: hidden;
+}
+
+.container {
+  margin-top: 25vh;
+  padding: 20px;
+}
+
+h1 {
+  font-size: 16px;
+  line-height: 1.6;
+  color: #ff1493;
+  text-shadow: 3px 3px #ff69b4;
+}
+
+button {
+  font-family: 'Press Start 2P', cursive;
+  font-size: 14px;
+  padding: 14px 20px;
+  margin: 15px;
+  border: 4px solid #ff1493;
+  border-radius: 8px;
+  background: white;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  touch-action: manipulation;
+}
+
+#yesBtn {
+  background: #ff69b4;
+  color: white;
+}
+
+#noBtn {
+  background: #fff0f5;
+  position: fixed;
+}
+
+.pixel-heart {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  background: #ff1493;
+  transform: rotate(45deg);
+  animation: float 6s infinite linear;
+}
+
+.pixel-heart:before,
+.pixel-heart:after {
+  content: "";
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  background: #ff1493;
+  border-radius: 50%;
+}
+
+.pixel-heart:before {
+  top: -10px;
+  left: 0;
+}
+
+.pixel-heart:after {
+  left: -10px;
+  top: 0;
+}
+
+@keyframes float {
+  0% { transform: translateY(100vh) rotate(45deg); opacity: 1; }
+  100% { transform: translateY(-10vh) rotate(45deg); opacity: 0; }
+}
+
+@keyframes shake {
+  0% { transform: translate(0px, 0px); }
+  25% { transform: translate(-5px, 5px); }
+  50% { transform: translate(5px, -5px); }
+  75% { transform: translate(-5px, -5px); }
+  100% { transform: translate(0px, 0px); }
+}
+
+.shake {
+  animation: shake 0.3s;
+}
+</style>
+</head>
+
+<body>
+
+<div id="waitingScreen" class="container">
+  <h1>The surprise unlocks at 11:55 PM 💗</h1>
+  <h1 id="countdown"></h1>
+</div>
+
+<div id="mainContent" style="display:none;">
+  <div class="container">
+    <h1>DEVANSH… WILL YOU BE MY VALENTINE? 💗</h1>
+    <button id="yesBtn" onclick="sayYes()">YES 💖</button>
+    <button id="noBtn" onclick="moveNo()">NO 💔</button>
+  </div>
+</div>
+
+<audio id="bgMusic" loop>
+  <source src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_c8c8a73467.mp3?filename=cute-love-11370.mp3" type="audio/mpeg">
+</audio>
+
+<script>
+let yesSize = 1;
+
+function moveNo() {
+  const noBtn = document.getElementById("noBtn");
+  const yesBtn = document.getElementById("yesBtn");
+
+  document.body.classList.add("shake");
+  setTimeout(() => {
+    document.body.classList.remove("shake");
+  }, 300);
+
+  const x = Math.random() * (window.innerWidth - 120);
+  const y = Math.random() * (window.innerHeight - 60);
+  noBtn.style.left = x + "px";
+  noBtn.style.top = y + "px";
+
+  yesSize += 0.2;
+  yesBtn.style.transform = "scale(" + yesSize + ")";
+}
+
+function sayYes() {
+  document.getElementById("bgMusic").play();
+
+  document.body.innerHTML = `
+    <div style="margin-top:25vh;">
+      <h1 style="font-size:18px;">
+        YAY Devansh you're my valentine now!!! 💖
+      </h1>
+      <img src="https://media.giphy.com/media/MDJ9IbxxvDUQM/giphy.gif"
+           style="margin-top:40px; width:250px; border:4px solid #ff1493;">
+    </div>
+  `;
+}
+
+function createHeart() {
+  const heart = document.createElement("div");
+  heart.classList.add("pixel-heart");
+  heart.style.left = Math.random() * window.innerWidth + "px";
+  heart.style.animationDuration = (Math.random() * 3 + 3) + "s";
+  document.body.appendChild(heart);
+
+  setTimeout(() => {
+    heart.remove();
+  }, 6000);
+}
+
+setInterval(createHeart, 400);
+
+/* Countdown Unlock System */
+
+const unlockHour = 23;
+const unlockMinute = 55;
+
+function checkTime() {
+  const now = new Date();
+  const unlockTime = new Date();
+
+  unlockTime.setHours(unlockHour);
+  unlockTime.setMinutes(unlockMinute);
+  unlockTime.setSeconds(0);
+
+  if (now >= unlockTime) {
+    document.getElementById("waitingScreen").style.display = "none";
+    document.getElementById("mainContent").style.display = "block";
+  } else {
+    const diff = unlockTime - now;
+
+    const minutes = Math.floor(diff / 60000);
+    const seconds = Math.floor((diff % 60000) / 1000);
+
+    document.getElementById("countdown").innerText =
+      minutes + "m " + seconds + "s";
+  }
+}
+
+setInterval(checkTime, 1000);
+checkTime();
+</script>
+
+</body>
+</html>
